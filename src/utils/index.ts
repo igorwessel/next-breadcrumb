@@ -1,5 +1,6 @@
 import {
   GenerateBreadCrumbFN,
+  IBreadCrumb,
   ILabelTextGenerator,
   LabelTextGeneratorFN,
 } from '~/types'
@@ -52,30 +53,42 @@ const getLabelFNFromGenerator =
 export const generateBreadcrumb: GenerateBreadCrumbFN =
   ([asPath, pathName]) =>
   labelTextGeneratorObj => {
+    const removePathWhenPassFalse = (_: IBreadCrumb, idx: number) => {
+      if (
+        labelTextGeneratorObj[sanitizeDynamicParam(pathName[idx])] === undefined
+      ) {
+        return true
+      }
+
+      return labelTextGeneratorObj[sanitizeDynamicParam(pathName[idx])]
+    }
+
     return [
       {
         title: 'Home',
         href: '/',
       },
     ].concat(
-      asPath.map((path, idx) => {
-        const param = sanitizeDynamicParam(pathName[idx])
-        const title = path.includes('-')
-          ? sanitizeSlug(path)
-          : toCapitalize(
-              getLabelTextFromGenerator(param)(labelTextGeneratorObj)
-            )
+      asPath
+        .map((path, idx) => {
+          const param = sanitizeDynamicParam(pathName[idx])
+          const title = path.includes('-')
+            ? sanitizeSlug(path)
+            : toCapitalize(
+                getLabelTextFromGenerator(param)(labelTextGeneratorObj)
+              )
 
-        const labelGenerator = getLabelFNFromGenerator(
-          param,
-          path
-        )(labelTextGeneratorObj)
+          const labelGenerator = getLabelFNFromGenerator(
+            param,
+            path
+          )(labelTextGeneratorObj)
 
-        return {
-          title,
-          href: `/${asPath.slice(0, idx + 1).join('/')}`,
-          labelGenerator,
-        }
-      })
+          return {
+            title,
+            href: `/${asPath.slice(0, idx + 1).join('/')}`,
+            labelGenerator,
+          }
+        })
+        .filter(removePathWhenPassFalse)
     )
   }

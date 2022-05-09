@@ -1,7 +1,7 @@
 export type LabelTextGeneratorFN = (param: string) => Promise<string> | string
 
 export type ILabelTextGenerator = {
-  [key: string]: string | LabelTextGeneratorFN
+  [key: string]: string | boolean | LabelTextGeneratorFN
 }
 
 export type IBreadCrumb = {

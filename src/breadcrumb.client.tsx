@@ -22,7 +22,7 @@ const Crumb = ({ title, href, labelGenerator, last }: ICrumb) => {
 
   if (last) {
     return (
-      <li>
+      <li data-testid='breadcrumb__crumb--last'>
         <a href={href} onClick={e => e.preventDefault()} aria-current='page'>
           {text}
         </a>
@@ -31,7 +31,7 @@ const Crumb = ({ title, href, labelGenerator, last }: ICrumb) => {
   }
 
   return (
-    <li>
+    <li data-testid='breadcrumb__crumb'>
       <Link href={href}>{text}</Link>
       <span>{'>'}</span>
     </li>
@@ -41,14 +41,17 @@ const Crumb = ({ title, href, labelGenerator, last }: ICrumb) => {
 const BreadCrumb = ({ labelTextGenerator = {} }: IBreadCrumbProps) => {
   const { asPath, pathname } = useRouter()
 
-  const crumbs = React.useMemo(() => {
-    const routesAsPath = generatePaths(asPath)
-    const routesPathname = generatePaths(pathname)
+  const crumbs = React.useMemo(
+    function () {
+      const routesAsPath = generatePaths(asPath)
+      const routesPathname = generatePaths(pathname)
 
-    return generateBreadcrumb([routesAsPath, routesPathname])(
-      labelTextGenerator
-    )
-  }, [asPath, pathname, labelTextGenerator])
+      return generateBreadcrumb([routesAsPath, routesPathname])(
+        labelTextGenerator
+      )
+    },
+    [asPath, pathname, labelTextGenerator]
+  )
 
   return (
     <nav aria-label='breadcrumbs'>
