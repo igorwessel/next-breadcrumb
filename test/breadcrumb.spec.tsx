@@ -42,6 +42,7 @@ const setup =
 
     const utils = render(<Breadcrumb {...props} />)
     const user = userEvent.setup()
+
     return { utils, user }
   }
 
@@ -78,7 +79,7 @@ it('should last link need to have "aria-current" attr', () => {
 it('should have a divider when link not is the last', () => {
   setupDefault()
 
-  const allBreadcrumbs = screen.getAllByTestId('breadcrumb__crumb')
+  const allBreadcrumbs = screen.getAllByTestId(/--(home|user|profile|details)/i)
 
   allBreadcrumbs.forEach(breadcrumb => {
     expect(within(breadcrumb).getByText('>')).toBeInTheDocument()
@@ -134,4 +135,36 @@ it('should remove a route when pass in labelGenerator to remove', async () => {
   })
 
   expect(screen.queryByRole('link', { name: /user/i })).not.toBeInTheDocument()
+})
+
+it('should render a dynamic route with slug, slug need to be capitalized', () => {
+  setup({
+    asPath: '/user/john-doe/details',
+    pathname: '/user/[id]/details',
+  })()
+
+  expect(screen.getByRole('link', { name: /John doe/i })).toBeInTheDocument()
+})
+
+it('should use label defined in labelGenerator when route is a slug', () => {
+  setup({
+    asPath: '/user/john-doe/details',
+    pathname: '/user/[id]/details',
+  })({
+    labelTextGenerator: { id: 'John' },
+  })
+
+  expect(
+    screen.getByRole('link', { name: 'John', exact: true })
+  ).toBeInTheDocument()
+})
+
+it('should render a custom divider', () => {
+  setupDefault({
+    divider: <span>Hello</span>,
+  })
+
+  expect(
+    within(screen.getByTestId('breadcrumb__crumb--Home')).getByText('Hello')
+  ).toBeInTheDocument()
 })

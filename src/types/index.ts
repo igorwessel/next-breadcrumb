@@ -1,3 +1,5 @@
+import React from 'react'
+
 export type LabelTextGeneratorFN = (param: string) => Promise<string> | string
 
 export type ILabelTextGenerator = {
@@ -12,10 +14,12 @@ export type IBreadCrumb = {
 
 export type IBreadCrumbProps = {
   labelTextGenerator?: ILabelTextGenerator
+  divider?: React.ReactNode
 }
 
-export type ICrumb = IBreadCrumb & {
+export type ICrumbProps = IBreadCrumb & {
   last: boolean
+  divider?: React.ReactNode
 }
 
 export type GenerateBreadCrumbFN = ([asPath, pathName]: [

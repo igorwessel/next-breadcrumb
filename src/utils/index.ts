@@ -25,15 +25,16 @@ const sanitizeSlug = (path: string) =>
   path.split('-').map(toCapitalize).join(' ')
 
 const getLabelTextFromGenerator =
+  (pathName: string) =>
   (path: string) =>
   (obj: ILabelTextGenerator): string => {
-    const label = obj[path]
+    const label = obj[pathName]
 
     if (isString(label)) {
       return label
     }
 
-    return path
+    return path.includes('-') ? sanitizeSlug(path) : pathName
   }
 
 const getLabelFNFromGenerator =
@@ -72,11 +73,9 @@ export const generateBreadcrumb: GenerateBreadCrumbFN =
       asPath
         .map((path, idx) => {
           const param = sanitizeDynamicParam(pathName[idx])
-          const title = path.includes('-')
-            ? sanitizeSlug(path)
-            : toCapitalize(
-                getLabelTextFromGenerator(param)(labelTextGeneratorObj)
-              )
+          const title = toCapitalize(
+            getLabelTextFromGenerator(param)(path)(labelTextGeneratorObj)
+          )
 
           const labelGenerator = getLabelFNFromGenerator(
             param,

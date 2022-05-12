@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import { generateBreadcrumb, generatePaths } from '~/utils'
-import { ICrumb, IBreadCrumbProps } from '~/types'
+import { ICrumbProps, IBreadCrumbProps } from '~/types'
 
-const Crumb = ({ title, href, labelGenerator, last }: ICrumb) => {
+const Crumb = ({ title, href, labelGenerator, last, divider }: ICrumbProps) => {
   const [text, setText] = React.useState(title)
 
   React.useEffect(() => {
@@ -22,7 +22,7 @@ const Crumb = ({ title, href, labelGenerator, last }: ICrumb) => {
 
   if (last) {
     return (
-      <li data-testid='breadcrumb__crumb--last'>
+      <li className='breadcrumb__crumb' data-testid='breadcrumb__crumb--last'>
         <a href={href} onClick={e => e.preventDefault()} aria-current='page'>
           {text}
         </a>
@@ -31,14 +31,17 @@ const Crumb = ({ title, href, labelGenerator, last }: ICrumb) => {
   }
 
   return (
-    <li data-testid='breadcrumb__crumb'>
+    <li
+      className='breadcrumb__crumb'
+      data-testid={`breadcrumb__crumb--${text}`}
+    >
       <Link href={href}>{text}</Link>
-      <span>{'>'}</span>
+      {divider ?? <span aria-hidden='true'>{'>'}</span>}
     </li>
   )
 }
 
-const BreadCrumb = ({ labelTextGenerator = {} }: IBreadCrumbProps) => {
+const BreadCrumb = ({ labelTextGenerator = {}, divider }: IBreadCrumbProps) => {
   const { asPath, pathname } = useRouter()
 
   const crumbs = React.useMemo(
@@ -55,13 +58,14 @@ const BreadCrumb = ({ labelTextGenerator = {} }: IBreadCrumbProps) => {
 
   return (
     <nav aria-label='breadcrumbs'>
-      <ol>
+      <ol className='breadcrumbs'>
         {crumbs.map((crumb, idx) => (
           <Crumb
             href={crumb.href}
             title={crumb.title}
             labelGenerator={crumb.labelGenerator}
             key={crumb.title}
+            divider={divider}
             last={crumbs.length - 1 === idx}
           />
         ))}
