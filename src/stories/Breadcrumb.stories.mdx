@@ -1,0 +1,149 @@
+import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { Canvas, Meta, Story, ArgsTable, Source } from '@storybook/addon-docs'
+
+import Breadcrumb from '../breadcrumb.client'
+import dedent from 'dedent'
+
+<Meta title='Breadcrumbs' component={Breadcrumb} args />
+
+# Breadcrumb
+
+Automatically create routes based on Next Router. Allowing configure dynamically
+labels for each Route and remove a route in each crumb.
+
+export const Template = args => <Breadcrumb {...args} />
+
+## Default Usage
+
+<Canvas>
+  <Story
+    name='Default'
+    parameters={{
+      nextRouter: {
+        pathname: '/profile/[id]',
+        asPath: '/profile/lifeiscontent',
+        query: { id: 'lifeiscontent' },
+      },
+    }}
+>
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Custom Divider
+
+<Canvas>
+  <Story
+    name='Custom Divider'
+    parameters={{
+      nextRouter: {
+        pathname: '/profile/[id]',
+        asPath: '/profile/lifeiscontent',
+        query: { id: 'lifeiscontent' },
+      },
+    }}
+    args={{
+        divider: <span>{"->"}</span>
+    }}
+>
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Removing some Route
+
+Need to pass a key exact the same in path with **boolean** value for
+**labelTextGenerator**
+
+In example below the page path is: **/profile/[id]**
+
+<Canvas>
+  <Story
+    name='Removing Some Route'
+    parameters={{
+      nextRouter: {
+        pathname: '/profile/[id]',
+        asPath: '/profile/lifeiscontent',
+        query: { id: 'lifeiscontent' },
+      },
+    }}
+    args={{
+      labelTextGenerator: {
+        id: false,
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Change a label for some Route
+
+Need to pass a key exact the same in path with **string** value for
+**labelTextGenerator**
+
+In example below the page path is: **/profile/[id]**
+
+<Canvas>
+  <Story
+    name='Change label for some Route'
+    parameters={{
+      nextRouter: {
+        pathname: '/profile/[id]',
+        asPath: '/profile/lifeiscontent',
+        query: { id: 'lifeiscontent' },
+      },
+    }}
+    args={{
+      labelTextGenerator: {
+        id: 'Dynamic Label',
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
+
+## Change a label for dynamic route using a query
+
+Need to pass a key exact the same in path with **fn (query) => string** value
+for **labelTextGenerator**
+
+In example below the page path is: **/profile/[id]**
+
+<Canvas>
+  <Story
+    name='Change a label for dynamic route using a query'
+    parameters={{
+      nextRouter: {
+        pathname: '/profile/[id]',
+        asPath: '/profile/lifeiscontent',
+        query: { id: 'lifeiscontent' },
+      },
+      docs: {
+        source: {
+          code: dedent`
+          <Breadcrumb 
+             labelTextGenerator={{
+               id: function fetchProfile(query) {
+                    return query
+                  }
+             }}
+            />
+          `,
+          language: 'jsx',
+          type: 'code',
+        },
+      },
+    }}
+    args={{
+      labelTextGenerator: {
+        id: function fetchProfile(query) {
+          return query
+        },
+      },
+    }}
+  >
+    {Template.bind({})}
+  </Story>
+</Canvas>
