@@ -17,6 +17,14 @@ const getPackageNameCamelCase = () => {
   }
 }
 
+const getOutputFileName = (extension: string) => (module: string) =>
+  module.includes('.client')
+    ? `${getPackageName()}.client.${extension}`
+    : `${getPackageName()}.server.${extension}`
+
+const getESMOutputFileName = getOutputFileName('mjs')
+const getCJSOutputFileName = getOutputFileName('cjs')
+
 const fileName = {
   es: `${getPackageName()}.mjs`,
   cjs: `${getPackageName()}.cjs`,
@@ -33,8 +41,32 @@ export default defineConfig({
       fileName: format => fileName[format],
     },
     rollupOptions: {
+      input: {
+        [`${getPackageName()}.client`]: path.resolve(
+          __dirname,
+          'src/breadcrumb.client.tsx'
+        ),
+        [`${getPackageName()}.server`]: path.resolve(
+          __dirname,
+          'src/breadcrumb.server.tsx'
+        ),
+      },
+      output: [
+        {
+          entryFileNames: ({ facadeModuleId }) =>
+            getESMOutputFileName(facadeModuleId),
+          format: 'esm',
+          dir: path.resolve(__dirname, 'dist'),
+        },
+        {
+          entryFileNames: ({ facadeModuleId }) =>
+            getCJSOutputFileName(facadeModuleId),
+          format: 'commonjs',
+          exports: 'named',
+          dir: path.resolve(__dirname, 'dist'),
+        },
+      ],
       external: ['react', 'next/router', 'next/link'],
-      output: {},
     },
   },
 })
