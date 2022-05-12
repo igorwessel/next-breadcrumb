@@ -35,7 +35,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: path.resolve(__dirname, 'src/breadcrumb.client.tsx'),
       name: getPackageNameCamelCase(),
       formats: ['es', 'cjs'],
       fileName: format => fileName[format],
