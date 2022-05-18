@@ -1,13 +1,10 @@
 {
   "name": "next-breadcrumb",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "http://igorwessel.github.io/next-breadcrumb",
   "files": [
-    "dist/jsx-runtime.js",
-    "dist/next-breadcrumb.client.cjs",
-    "dist/next-breadcrumb.server.cjs",
-    "dist/next-breadcrumb.client.mjs",
-    "dist/next-breadcrumb.server.mjs"
+    "dist/next-breadcrumb.cjs",
+    "dist/next-breadcrumb.mjs"
   ],
   "exports": {
     "./next-breadcrumb.client": {
