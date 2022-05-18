@@ -1,19 +1,15 @@
 {
   "name": "next-breadcrumb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "http://igorwessel.github.io/next-breadcrumb",
   "files": [
     "dist/next-breadcrumb.cjs",
     "dist/next-breadcrumb.mjs"
   ],
   "exports": {
-    "./next-breadcrumb.client": {
-      "require": "./dist/next-breadcrumb.client.cjs",
-      "import": "./dist/next-breadcrumb.client.mjs"
-    },
-    "./next-breadcrumb.server": {
-      "require": "./dist/next-breadcrumb.server.cjs",
-      "import": "./dist/next-breadcrumb.server.mjs"
+    ".": {
+      "require": "./dist/next-breadcrumb.cjs",
+      "import": "./dist/next-breadcrumb.mjs"
     }
   },
   "scripts": {
